@@ -73,12 +73,19 @@
         <properties/>
         <border type="etched"/>
         <children>
-          <component id="320bc" class="javax.swing.JTextArea" binding="txtChatArea">
+          <scrollpane id="233a4">
             <constraints border-constraint="Center"/>
-            <properties>
-              <editable value="false"/>
-            </properties>
-          </component>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="320bc" class="javax.swing.JTextArea" binding="txtChatArea">
+                <constraints/>
+                <properties>
+                  <editable value="false"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
         </children>
       </grid>
       <grid id="c0721" layout-manager="BorderLayout" hgap="0" vgap="0">

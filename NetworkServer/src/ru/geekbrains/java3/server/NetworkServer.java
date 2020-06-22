@@ -2,8 +2,9 @@ package ru.geekbrains.java3.server;
 
 import ru.geekbrains.java3.client.Command;
 import ru.geekbrains.java3.server.auth.AuthService;
-//import ru.geekbrains.java3.server.auth.BaseAuthService;
 import ru.geekbrains.java3.server.auth.DbSqlLiteAuthService;
+import ru.geekbrains.java3.server.censor.CensorService;
+import ru.geekbrains.java3.server.censor.FileCensorService;
 import ru.geekbrains.java3.server.client.ClientHandler;
 
 import java.io.IOException;
@@ -13,18 +14,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+//import ru.geekbrains.java3.server.auth.BaseAuthService;
+//import ru.geekbrains.java3.server.censor.BaseCensorService;
+
 
 public class NetworkServer {
     private final int port;
     private final List<ClientHandler> clients
             = new CopyOnWriteArrayList<>();
-
     private final AuthService authService;
+    private final CensorService censorService;
 
     public NetworkServer(int port) {
         this.port = port;
         this.authService = new DbSqlLiteAuthService();
-        //this.authService = new BaseAuthService();
+//        this.authService = new BaseAuthService();
+//        this.censorService = new BaseCensorService();
+        this.censorService = new FileCensorService();
     }
 
 
@@ -34,6 +40,7 @@ public class NetworkServer {
             System.out.printf(
                     "Сервер был успешно запущен на порту %s%n",
                     port);
+
             authService.start();
             while (true) {
                 System.out.println("Ожидание подключения клиента...");
@@ -128,4 +135,7 @@ public class NetworkServer {
         return false;
     }
 
+    public CensorService getCensorService() {
+        return censorService;
+    }
 }

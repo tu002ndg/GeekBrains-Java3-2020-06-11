@@ -107,13 +107,18 @@ public class ClientHandler {
                 case PRIVATE_MESSAGE: {
                     PrivateMessageCommand commandData = (PrivateMessageCommand) command.getData();
                     String receiver = commandData.getReceiver();
-                    String message = commandData.getMessage();
-                    networkServer.sendMessage(receiver, Command.messageCommand(nickname, message));
+                    //Применить цензуру к сообщению
+                    String message =
+                            networkServer.getCensorService().apply(commandData.getMessage());
+                    networkServer.sendMessage(receiver,
+                            Command.messageCommand(nickname, message));
                     break;
                 }
                 case BROADCAST_MESSAGE: {
                     BroadcastMessageCommand commandData = (BroadcastMessageCommand) command.getData();
-                    String message = commandData.getMessage();
+                    // Применить цензуру к сообщению
+                    String message =
+                            networkServer.getCensorService().apply(commandData.getMessage());
                     networkServer.broadcastMessage(Command.messageCommand(nickname, message), this);
                     break;
                 }
