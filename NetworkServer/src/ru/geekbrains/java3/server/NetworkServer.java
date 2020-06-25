@@ -13,6 +13,9 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 //import ru.geekbrains.java3.server.auth.BaseAuthService;
 //import ru.geekbrains.java3.server.censor.BaseCensorService;
@@ -24,6 +27,8 @@ public class NetworkServer {
             = new CopyOnWriteArrayList<>();
     private final AuthService authService;
     private final CensorService censorService;
+    public ExecutorService executorService;
+
 
     public NetworkServer(int port) {
         this.port = port;
@@ -40,7 +45,7 @@ public class NetworkServer {
             System.out.printf(
                     "Сервер был успешно запущен на порту %s%n",
                     port);
-
+            executorService = Executors.newFixedThreadPool(2);
             authService.start();
             while (true) {
                 System.out.println("Ожидание подключения клиента...");
@@ -53,6 +58,7 @@ public class NetworkServer {
             e.printStackTrace();
         } finally {
             authService.stop();
+            executorService.shutdown();
         }
     }
 

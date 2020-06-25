@@ -39,11 +39,34 @@ public class ClientHandler {
     }
 
 
+//    private void doHandle(Socket socket) {
+//        try {
+//            out = new ObjectOutputStream(socket.getOutputStream());
+//            in = new ObjectInputStream(socket.getInputStream());
+//            new Thread(()->{
+//                try {
+//                    authTimer();
+//                    authentication();
+//                    readMessage();
+//                } catch (IOException e) {
+//                    System.out.printf("Соединение с клиентом %s было закрыто%n",
+//                            nickname);
+//                }
+//                finally {
+//                    closeConnection();
+//                }
+//            }).start();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     private void doHandle(Socket socket) {
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-            new Thread(()->{
+            networkServer.executorService.execute(()-> {
                 try {
                     authTimer();
                     authentication();
@@ -55,7 +78,7 @@ public class ClientHandler {
                 finally {
                     closeConnection();
                 }
-            }).start();
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
