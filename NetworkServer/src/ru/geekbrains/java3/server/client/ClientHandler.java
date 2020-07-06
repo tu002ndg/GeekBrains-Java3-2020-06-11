@@ -1,5 +1,7 @@
 package ru.geekbrains.java3.server.client;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.geekbrains.java3.client.Command;
 import ru.geekbrains.java3.client.CommandType;
 import ru.geekbrains.java3.client.command.AuthCommand;
@@ -14,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ClientHandler {
+    static final Logger clientLogger = LogManager.getLogger(ClientHandler.class);
 
     private static final long AUTH_TIME_DURATION = 120000;
     private final NetworkServer networkServer;
@@ -72,8 +75,8 @@ public class ClientHandler {
                     authentication();
                     readMessage();
                 } catch (IOException e) {
-                    System.out.printf("Соединение с клиентом %s было закрыто%n",
-                            nickname);
+                    clientLogger.info(String.format("Соединение с клиентом %s было закрыто%n",
+                            nickname));
                 }
                 finally {
                     closeConnection();
@@ -100,9 +103,10 @@ public class ClientHandler {
             if (command == null) {
                 continue;
             }
+            clientLogger.info(String.format("Клиент {%s} прислал сообщение/команду",nickname));
             switch (command.getType()) {
                 case END:
-                    System.out.println("Received 'END' command");
+                    clientLogger.info("Received 'END' command");
                     return;
                 case UPDATE_USERNAME: {
                     UpdateUserNameCommand commandData =
@@ -156,7 +160,7 @@ public class ClientHandler {
             return (Command) in.readObject();
         } catch (ClassNotFoundException e) {
             String errorMessage = "Unknown type of object from client!";
-            System.err.println(errorMessage);
+            clientLogger.error(errorMessage);
             e.printStackTrace();
             sendMessage(Command.errorCommand(errorMessage));
             return null;

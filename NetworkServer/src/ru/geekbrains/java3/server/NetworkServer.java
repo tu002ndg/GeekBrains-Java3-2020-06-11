@@ -13,15 +13,19 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 //import ru.geekbrains.java3.server.auth.BaseAuthService;
 //import ru.geekbrains.java3.server.censor.BaseCensorService;
 
 
 public class NetworkServer {
+    static final Logger serverLogger = LogManager.getLogger(NetworkServer.class);
+
     private final int port;
     private final List<ClientHandler> clients
             = new CopyOnWriteArrayList<>();
@@ -42,19 +46,21 @@ public class NetworkServer {
     public void start() {
 
         try (ServerSocket serverSocket = new ServerSocket(port)){
-            System.out.printf(
-                    "Сервер был успешно запущен на порту %s%n",
-                    port);
+//            System.out.printf(
+//                    "Сервер был успешно запущен на порту %s%n",
+//                    port);
+            serverLogger.info(String.format("Сервер был успешно запущен на порту %s%n",
+                    port));
             executorService = Executors.newFixedThreadPool(2);
             authService.start();
             while (true) {
-                System.out.println("Ожидание подключения клиента...");
+                serverLogger.info("Ожидание подключения клиента...");
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Клиент подключился");
+                serverLogger.info("Клиент подключился");
                 createClientHandler(clientSocket);
             }
         } catch (IOException e) {
-            System.out.println("Ошибка при работе сервера");
+            serverLogger.fatal("Ошибка при работе сервера");
             e.printStackTrace();
         } finally {
             authService.stop();

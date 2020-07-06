@@ -1,11 +1,32 @@
 package ru.geekbrains.java3.server;
 
+
+
 public class ServerApp {
     private static final int DEFAULT_PORT = 8189;
+//    static final Logger rootLogger = LogManager.getRootLogger();
+
+
 
     public static void main(String[] args) {
+
         int port = getServerPort(args);
-        new NetworkServer(port).start();
+        NetworkServer server = new NetworkServer(port);
+//        serverLogger.debug("Debug");
+//        serverLogger.info("Info");
+//        serverLogger.warn("Warn");
+//        serverLogger.error("Error");
+//        serverLogger.fatal("Fatal");
+//        serverLogger.info("Hello, world!");
+
+
+//        serverLogger.info(server.sendMessage());
+
+//        rootLogger.info("Root logger: "+server.sendMessage());
+
+
+        server.start();
+
     }
 
     private static int getServerPort(String[] args) {
